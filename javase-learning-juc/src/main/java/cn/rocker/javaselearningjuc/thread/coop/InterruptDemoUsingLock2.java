@@ -10,7 +10,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @date 2019-09-12 10:47
  * @since
  */
-public class InterruptDemoUsingLock {
+public class InterruptDemoUsingLock2 {
 
     Object object = new Object();
     int flag = 0;
@@ -31,7 +31,7 @@ public class InterruptDemoUsingLock {
             System.out.println("thread1被中断");
         }
         /** 这里的输出，可以看到，thread1是RUNNABLE状态，并且还在运行中
-         *  但是thread2是TERMINATED状态，可见{@Link Lock#lockInterruptibly}是真的可以中断一个处于等待锁的线程 */
+         *  但是thread2是WAITING状态，可见{@Link Lock#lock}是也无法中断一个处于等待锁的线程 */
         System.out.println(thread1.getState());
         System.out.println(thread2.getState());
     }
@@ -40,13 +40,10 @@ public class InterruptDemoUsingLock {
         @Override
         public void run() {
             try {
-                lock.lockInterruptibly();
+                lock.lock();
                 flag = 1;
                 /** 这里用这个死循环的意图是保证线程或者，要不然执行完就成了TERMINATED状态了 */
-                while (true) {
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                while (true) {}
             } finally {
                 lock.unlock();
             }
@@ -57,13 +54,10 @@ public class InterruptDemoUsingLock {
         @Override
         public void run() {
             try {
-                lock.lockInterruptibly();
+                lock.lock();
                 flag = 2;
                 /** 这里用这个死循环的意图是保证线程或者，要不然执行完就成了TERMINATED状态了 */
-                while (true) {
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                while (true) {}
             } finally {
                 lock.unlock();
             }
