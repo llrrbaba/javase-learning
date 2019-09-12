@@ -1,4 +1,5 @@
 #### ArrayBlockingQueue
+###### Java1.8.0_201
 
 ~~~ java
 package java.util.concurrent;
@@ -164,6 +165,7 @@ public class ArrayBlockingQueue<E> extends AbstractQueue<E>
         // assert removeIndex >= 0 && removeIndex < items.length;
         final Object[] items = this.items;
         if (removeIndex == takeIndex) {
+            // 如果要移除的元素的index正好等于takeIndex，那直接把takeIndex设置为null即可
             // removing front item; just advance
             items[takeIndex] = null;
             if (++takeIndex == items.length)
@@ -172,6 +174,7 @@ public class ArrayBlockingQueue<E> extends AbstractQueue<E>
             if (itrs != null)
                 itrs.elementDequeued();
         } else {
+            // 如果要移除的元素的index不等于takeIndex，就要进行遍历了
             // an "interior" remove
 
             // slide over all others up through putIndex.
@@ -180,6 +183,9 @@ public class ArrayBlockingQueue<E> extends AbstractQueue<E>
                 int next = i + 1;
                 if (next == items.length)
                     next = 0;
+                // 如果removeIndex的下一位index不是putIndex，就把下一位index的值赋给当前index
+                // 一直遍历，直到next == putIndex，那么就把这时的index上的值设置为null，
+                // 并把这时的index设置为putIndex，break跳出循环，完成remove
                 if (next != putIndex) {
                     items[i] = items[next];
                     i = next;
